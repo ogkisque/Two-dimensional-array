@@ -1,55 +1,46 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <string.h>
 
-void print_arr (const int* arr);
-int  getter (const int* arr, int i, int j);
-int  setter (int* arr, int i, int j, int value);
+void read_file (char* arr, const char* file_name, int row, int col);
+void print_arr (const char* arr, int row, int col);
+
+const int MAX_ROW = 50;
+const int MAX_COL = 50;
+const char* FILE_NAME = "file.txt";
 
 int main ()
 {
-    int arr[] = {3, 4,
-                 1,  2,  3,  4,
-                 5,  6,  7,  8,
-                 9, 10, 11, 12};
+    char arr[MAX_ROW][MAX_COL] = {};
 
-    print_arr (arr);
-    printf ("\n");
-
-    setter (arr, 1, 2, 99);
-    print_arr (arr);
+    read_file ((char*) arr, FILE_NAME, MAX_ROW, MAX_COL);
+    print_arr ((char*) arr, MAX_ROW, MAX_COL);
 }
 
-void print_arr (const int* arr)
+void print_arr (const char* arr, int row, int col)
 {
     assert (arr);
 
-    for (int i = 0; i < arr[0]; i++)
+    for (int i = 0; i < row; i++)
     {
-        for (int j = 0; j < arr[1]; j++)
-            printf ("%d ", getter (arr, i, j));
-        printf ("\n");
+        for (int j = 0; j < col; j++)
+            printf ("%c", arr[i * col + j]);
     }
 }
 
-int getter (const int* arr, int i, int j)
+void read_file (char* arr, const char* file_name, int row, int col)
 {
-    assert (arr);
+    FILE* file = fopen (file_name, "r");
 
-    if (i >= arr[0] || j >= arr[1])
-        return NAN;
+    int i = 0;
+    char str[MAX_COL] = "";
+    while (fgets (str, col, file) != NULL && i < row)
+    {
+        strncpy (arr + i * col + 1, str, col);
+        i++;
+    }
 
-    return arr[i * arr[1] + j + 2];
+    fclose (file);
 }
 
-int setter (int* arr, int i, int j, int value)
-{
-    assert (arr);
-
-    if (i >= arr[0] || j >= arr[1])
-        return NAN;
-
-    int tmp = arr[i * arr[1] + j + 2];
-    arr[i * arr[1] + j + 2] = value;
-    return tmp;
-}
