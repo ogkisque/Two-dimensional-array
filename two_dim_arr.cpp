@@ -1,32 +1,55 @@
 #include <stdio.h>
+#include <assert.h>
+#include <math.h>
 
-struct Array
-{
-    int* data;
-    size_t row;
-    size_t col;
-};
-
-void print_arr (const Array* arr);
+void print_arr (const int* arr);
+int  getter (const int* arr, int i, int j);
+int  setter (int* arr, int i, int j, int value);
 
 int main ()
 {
-    int data_t[] = {1,  2,  3,  4,
-                   5,  6,  7,  8,
-                   9, 10, 11, 12};
-    Array arr;
-    arr.row = 3;
-    arr.col = 4;
-    arr.data = data_t;
-    print_arr (&arr);
+    int arr[] = {3, 4,
+                 1,  2,  3,  4,
+                 5,  6,  7,  8,
+                 9, 10, 11, 12};
+
+    print_arr (arr);
+    printf ("\n");
+
+    setter (arr, 1, 2, 99);
+    print_arr (arr);
 }
 
-void print_arr (const Array* arr)
+void print_arr (const int* arr)
 {
-    for (size_t i = 0; i < arr->row; i++)
+    assert (arr);
+
+    for (int i = 0; i < arr[0]; i++)
     {
-        for (size_t j = 0; j < arr->col; j++)
-            printf ("%d ", (arr->data)[i * arr->col + j]);
+        for (int j = 0; j < arr[1]; j++)
+            printf ("%d ", getter (arr, i, j));
         printf ("\n");
     }
+}
+
+int getter (const int* arr, int i, int j)
+{
+    assert (arr);
+
+    if (i >= arr[0] || j >= arr[1])
+        return NAN;
+
+    return arr[i * arr[1] + j + 2];
+}
+
+int setter (int* arr, int i, int j, int value)
+{
+    assert (arr);
+
+    if (i >= arr[0] || j >= arr[1])
+        return NAN;
+
+    int tmp = arr[i * arr[1] + j + 2];
+    arr[i * arr[1] + j + 2] = value;
+    return tmp;
 }
