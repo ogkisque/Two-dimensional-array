@@ -1,46 +1,60 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <math.h>
 #include <string.h>
 
-void read_file (char* arr, const char* file_name, int row, int col);
-void print_arr (const char* arr, int row, int col);
-
-const int MAX_ROW = 50;
-const int MAX_COL = 50;
+const int   MAX_LEN   = 300;
+const int   MAX_ROW   = 300;
 const char* FILE_NAME = "file.txt";
+
+int read_arr (char** arr, const char* file_name);
+void print_arr (const char** arr, int row);
+void free_arr (char** arr, int row);
 
 int main ()
 {
-    char arr[MAX_ROW][MAX_COL] = {};
+    char** arr = (char**) calloc (MAX_ROW, sizeof (char*));
 
-    read_file ((char*) arr, FILE_NAME, MAX_ROW, MAX_COL);
-    print_arr ((char*) arr, MAX_ROW, MAX_COL);
+    int row = read_arr (arr, FILE_NAME);
+    print_arr ((const char**) arr, row);
+
+    free_arr (arr, row);
 }
 
-void print_arr (const char* arr, int row, int col)
+void print_arr (const char** arr, int row)
 {
     assert (arr);
 
     for (int i = 0; i < row; i++)
     {
-        for (int j = 0; j < col; j++)
-            printf ("%c", arr[i * col + j]);
+        printf ("%s", arr[i]);
     }
 }
 
-void read_file (char* arr, const char* file_name, int row, int col)
+int read_arr (char** arr, const char* file_name)
 {
     FILE* file = fopen (file_name, "r");
 
+    assert (file);
+
     int i = 0;
-    char str[MAX_COL] = "";
-    while (fgets (str, col, file) != NULL && i < row)
+    char str[MAX_LEN] = {};
+    while (fgets (str, 100, file) != NULL)
     {
-        strncpy (arr + i * col + 1, str, col);
+        arr[i] = strdup (str);
         i++;
     }
 
     fclose (file);
+
+    return i;
+}
+
+void free_arr (char** arr, int row)
+{
+    for (int i = 0; i < row; i++)
+        free (arr[i]);
+    free (arr);
 }
 
